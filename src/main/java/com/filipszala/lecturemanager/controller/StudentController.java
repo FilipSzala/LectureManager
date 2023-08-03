@@ -24,11 +24,11 @@ public class StudentController {
     @GetMapping("")
     @ResponseBody
     public List<Student> displayAllStudent(){
-        return studentRepository.findAll();
+        return studentService.findAllStudents();
     }
-    @GetMapping("/{studentId}")
+    @GetMapping("/{id}")
     @ResponseBody
-    public User displayStudent(@PathVariable("studentId")Long id){
+    public User displayStudentById(@PathVariable("id")Long id){
         return studentService.findStudentById(id).orElseThrow();
     }
     @PostMapping("")
@@ -36,21 +36,21 @@ public class StudentController {
     public User createStudent(@RequestBody Student student){
         return studentService.save(student);
     }
-    @PutMapping("/{studentId}")
+    @PutMapping("/{id}")
     @ResponseBody
-    public User updateStudent(@PathVariable("studentId")Long id,@RequestBody Student updatedStudent){
+    public User updateStudent(@PathVariable("id")Long id,@RequestBody Student updatedStudent){
         return studentService.updateStudent(id,updatedStudent);
     }
 
-    @PatchMapping("/{studentId}")
+    @PatchMapping("/{id}")
     @ResponseBody
-    public User partiallyUpdateStudent(@PathVariable("studentId")Long id,@RequestBody Student updatedStudent){
+    public User partiallyUpdateStudent(@PathVariable("id")Long id,@RequestBody Student updatedStudent){
         return studentService.partiallyUpdateStudent(id,updatedStudent);
     }
 
-    @DeleteMapping("/{studentId}")
+    @DeleteMapping("/{id}")
     @ResponseBody
-    public void deleteStudent(@PathVariable("studentId")Long id){
+    public void deleteStudent(@PathVariable("id")Long id){
         studentService.deleteStudent(id);
     }
 }

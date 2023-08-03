@@ -1,8 +1,8 @@
 package com.filipszala.lecturemanager;
 
-import com.filipszala.lecturemanager.model.Lecturer;
+import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.model.Student;
-import com.filipszala.lecturemanager.repository.LecturerRepository;
+import com.filipszala.lecturemanager.repository.ProfessorRepository;
 import com.filipszala.lecturemanager.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,16 +12,16 @@ import org.springframework.context.annotation.Configuration;
 public class DbInit implements CommandLineRunner {
 
     private final StudentRepository studentRepository;
-    private final LecturerRepository lecturerRepository;
+    private final ProfessorRepository professorRepository;
     @Autowired
-    public DbInit(StudentRepository studentRepository,LecturerRepository lecturerRepository) {
+    public DbInit(StudentRepository studentRepository, ProfessorRepository professorRepository) {
         this.studentRepository = studentRepository;
-        this.lecturerRepository = lecturerRepository;
+        this.professorRepository = professorRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
         studentRepository.save(new Student("Filip","Szala"));
-        lecturerRepository.save(new Lecturer("Roksana","Kolacz"));
+        professorRepository.save(new Professor("Roksana","Kolacz"));
     }
 }

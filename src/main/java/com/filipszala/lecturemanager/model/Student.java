@@ -1,9 +1,11 @@
 package com.filipszala.lecturemanager.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,9 +14,12 @@ import lombok.*;
 public class Student implements User {
     @Id
     @GeneratedValue
-    private Long id;
+    private Long studentId;
     private String name;
     private String surname;
+    @ManyToMany(mappedBy = "studentsList", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Lecture> selectedLectures = new ArrayList<>();
 
     public Student(String name, String surname) {
         this.name = name;
