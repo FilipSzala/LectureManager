@@ -22,35 +22,69 @@ public class ProfessorService {
         this.professorRepository = professorRepository;
     }
     public Professor save(Professor professor){
+        if (professor.getName() == null || professor.getSurname() == null) {
+            throw new IllegalArgumentException("Fields of professor can't be empty");
+        } else if (professor == null) {
+            throw new IllegalArgumentException("Professor can't be empty");
+        }
         return professorRepository.save(professor);
     }
     public List<Professor> findAllProfessors(){
         return professorRepository.findAll();
     }
     public Optional<Professor> findProfessorById (Long id){
+        if (id==null){
+            throw new NullPointerException("Id can't be null");
+        }else if (id<=0) {
+            throw new IllegalArgumentException("Id can't be less than 1");
+        }
         return professorRepository.findById(id);
     }
-    public Professor updateProffesor (Long id,Professor updatedProffesor){
+    public Professor updateProffesor (Long id,Professor updatedProfessor){
+        if (updatedProfessor==null){
+            throw new IllegalArgumentException("Updated professor can't be empty");
+        }
+        if (updatedProfessor.getSurname()==null||updatedProfessor.getName()==null||updatedProfessor.getProfessorId()==null||updatedProfessor.getLectures().isEmpty()){
+            throw new IllegalArgumentException("Fields of professor can't be empty");
+        }
+        else if (id==null){
+            throw new NullPointerException("Id can't be null");
+        }else if (id<=0) {
+            throw new IllegalArgumentException("Id can't be less than 1");
+        }
         Professor professor = findProfessorById(id).orElseThrow();
-        professor.setName(updatedProffesor.getName());
-        professor.setSurname(updatedProffesor.getSurname());
-        professor.setLectures(updatedProffesor.getLectures());
+        professor.setName(updatedProfessor.getName());
+        professor.setSurname(updatedProfessor.getSurname());
+        professor.setLectures(updatedProfessor.getLectures());
         return save(professor);
     }
-    public Professor partiallyUpdateProffesor (Long id,Professor updatedProffesor){
+    public Professor partiallyUpdateProffesor (Long id,Professor updatedProfessor){
+        if (updatedProfessor==null){
+            throw new IllegalArgumentException("Updated professor can't be empty");
+        }
+        else if (id==null){
+            throw new NullPointerException("Id can't be null");
+        }else if (id<=0) {
+            throw new IllegalArgumentException("Id can't be less than 1");
+        }
         Professor professor = findProfessorById(id).orElseThrow();
-        if(updatedProffesor.getName()!=null) {
-            professor.setName(updatedProffesor.getName());
+        if(updatedProfessor.getName()!=null) {
+            professor.setName(updatedProfessor.getName());
         }
-        if (updatedProffesor.getSurname()!=null) {
-            professor.setSurname(updatedProffesor.getSurname());
+        if (updatedProfessor.getSurname()!=null) {
+            professor.setSurname(updatedProfessor.getSurname());
         }
-        if (updatedProffesor.getLectures()!=null) {
-            professor.setLectures(updatedProffesor.getLectures());
+        if (updatedProfessor.getLectures()!=null) {
+            professor.setLectures(updatedProfessor.getLectures());
         }
         return save(professor);
     }
     public void deleteProffesor (Long id){
+        if (id==null){
+            throw new NullPointerException("Id can't be null");
+        }else if (id<=0) {
+            throw new IllegalArgumentException("Id can't be less than 1");
+        }
         Professor professor = findProfessorById(id).orElseThrow();
         professorRepository.delete(professor);
     }

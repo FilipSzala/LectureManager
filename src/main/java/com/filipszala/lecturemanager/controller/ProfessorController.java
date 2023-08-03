@@ -1,18 +1,18 @@
 package com.filipszala.lecturemanager.controller;
 
-import com.filipszala.lecturemanager.model.Lecture;
 import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.model.User;
 import com.filipszala.lecturemanager.repository.LectureRepository;
 import com.filipszala.lecturemanager.repository.ProfessorRepository;
 import com.filipszala.lecturemanager.service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/professors")
 public class ProfessorController {
     private ProfessorRepository professorRepository;
@@ -26,39 +26,39 @@ public class ProfessorController {
     }
 
     @GetMapping("")
-    @ResponseBody
-    public List<Professor> displayAllProfessor() {
-        return professorService.findAllProfessors();
+    public ResponseEntity<List<Professor>> displayAllProfessor() {
+        List <Professor> foundUser  = professorService.findAllProfessors();
+        return new ResponseEntity<>(foundUser,HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @ResponseBody
-    public User displayProfessorById(@PathVariable("id") Long id) {
-        return professorService.findProfessorById(id).orElseThrow();
+    public ResponseEntity<User> displayProfessorById(@PathVariable("id") Long id) {
+        User user =professorService.findProfessorById(id).orElseThrow();
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("")
-    @ResponseBody
-    public User createProfessor(@RequestBody Professor professor) {
-        return professorService.save(professor);
+    public ResponseEntity<User> createProfessor(@RequestBody Professor professor) {
+        User user =professorService.save(professor);
+        return new ResponseEntity<>(user,HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    @ResponseBody
-    public User updateProfessor(@PathVariable("id") Long id, @RequestBody Professor updatedProfessor) {
-        return professorService.updateProffesor(id, updatedProfessor);
+    public ResponseEntity<User> updateProfessor(@PathVariable("id") Long id, @RequestBody Professor updatedProfessor) {
+        User user =professorService.updateProffesor(id, updatedProfessor);
+        return new ResponseEntity<>(user,HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    @ResponseBody
-    public User partiallyUpdateProfessor(@PathVariable("id") Long id, @RequestBody Professor updatedProfessor) {
-        return professorService.partiallyUpdateProffesor(id, updatedProfessor);
+    public ResponseEntity<User> partiallyUpdateProfessor(@PathVariable("id") Long id, @RequestBody Professor updatedProfessor) {
+        User user = professorService.partiallyUpdateProffesor(id, updatedProfessor);
+        return  new ResponseEntity<>(user,HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseBody
-    public void deleteProfessor(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteProfessor(@PathVariable("id") Long id) {
         professorService.deleteProffesor(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

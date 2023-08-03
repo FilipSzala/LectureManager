@@ -1,16 +1,19 @@
 package com.filipszala.lecturemanager.controller;
 
+import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.model.Student;
 import com.filipszala.lecturemanager.model.User;
 import com.filipszala.lecturemanager.repository.StudentRepository;
 import com.filipszala.lecturemanager.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/students")
 public class StudentController {
     private StudentRepository studentRepository;
@@ -22,35 +25,35 @@ public class StudentController {
         this.studentService = studentService;
     }
     @GetMapping("")
-    @ResponseBody
-    public List<Student> displayAllStudent(){
-        return studentService.findAllStudents();
+    public ResponseEntity<List<Student>> displayAllStudent(){
+        List <Student> foundUser = studentService.findAllStudents();
+        return new ResponseEntity<>(foundUser, HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    @ResponseBody
-    public User displayStudentById(@PathVariable("id")Long id){
-        return studentService.findStudentById(id).orElseThrow();
+    public ResponseEntity<User> displayStudentById(@PathVariable("id")Long id){
+        User user =studentService.findStudentById(id).orElseThrow();
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
     @PostMapping("")
-    @ResponseBody
-    public User createStudent(@RequestBody Student student){
-        return studentService.save(student);
+    public ResponseEntity<User> createStudent(@RequestBody Student student){
+        User user = studentService.save(student);
+        return new ResponseEntity<>(user,HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
-    @ResponseBody
-    public User updateStudent(@PathVariable("id")Long id,@RequestBody Student updatedStudent){
-        return studentService.updateStudent(id,updatedStudent);
+    public ResponseEntity<User> updateStudent(@PathVariable("id")Long id,@RequestBody Student updatedStudent){
+        User user = studentService.updateStudent(id,updatedStudent);
+        return new ResponseEntity<>(user,HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    @ResponseBody
-    public User partiallyUpdateStudent(@PathVariable("id")Long id,@RequestBody Student updatedStudent){
-        return studentService.partiallyUpdateStudent(id,updatedStudent);
+    public ResponseEntity<User> partiallyUpdateStudent(@PathVariable("id")Long id,@RequestBody Student updatedStudent){
+        User user = studentService.partiallyUpdateStudent(id,updatedStudent);
+        return  new ResponseEntity<>(user,HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseBody
-    public void deleteStudent(@PathVariable("id")Long id){
+    public ResponseEntity<Void> deleteStudent(@PathVariable("id")Long id){
         studentService.deleteStudent(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,17 +1,16 @@
 package com.filipszala.lecturemanager.controller;
 
 import com.filipszala.lecturemanager.model.Lecture;
-import com.filipszala.lecturemanager.model.Student;
-import com.filipszala.lecturemanager.repository.LectureRepository;
 import com.filipszala.lecturemanager.service.LectureService;
 import com.filipszala.lecturemanager.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/lectures")
 public class LectureController {
     private LectureService lectureService;
@@ -22,51 +21,46 @@ public class LectureController {
         this.studentService = studentService;
     }
     @GetMapping("")
-    @ResponseBody
-    public List<Lecture> displayAllLectures(){
-        return lectureService.findAllLectures();
+    public ResponseEntity<List<Lecture>> displayAllLectures(){
+
+        List<Lecture>foundLectures = lectureService.findAllLectures();
+        return new ResponseEntity<>(foundLectures, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    @ResponseBody
-    public Lecture displayLectureById(@PathVariable("id") Long id){
-        return lectureService.findLectureById(id).orElseThrow();
+    public ResponseEntity<Lecture> displayLectureById(@PathVariable("id") Long id){
+        Lecture lecture = lectureService.findLectureById(id).orElseThrow();
+        return new ResponseEntity<>(lecture, HttpStatus.OK);
     }
 
     @PostMapping("/professors/{id}")
-    @ResponseBody
-    public Lecture createLecture (@PathVariable("id")Long id,@RequestBody Lecture lecture){
+    public ResponseEntity<Lecture> createLecture (@PathVariable("id")Long id,@RequestBody Lecture lecture){
         lecture.setProfessorId(id);
-        return lectureService.save(lecture);
+        Lecture savedLecture = lectureService.save(lecture);
+        return new ResponseEntity<>(savedLecture, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    @ResponseBody
-    public Lecture updateLecture (@PathVariable("id")Long id,@RequestBody Lecture updatedLecture){
-      return lectureService.updateLecture(id,updatedLecture);
+    public ResponseEntity<Lecture> updateLecture (@PathVariable("id")Long id,@RequestBody Lecture updatedLecture){
+        Lecture lecture = lectureService.updateLecture(id,updatedLecture);
+        return new ResponseEntity<>(lecture, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    @ResponseBody
-    public Lecture partiallyUpdateLecture(@PathVariable("id")Long id, Lecture lecture){
-        return lectureService.partiallyUpdateLecture(id,lecture);
+    public ResponseEntity<Lecture> partiallyUpdateLecture(@PathVariable("id")Long id, Lecture updatedLecture){
+        Lecture lecture =  lectureService.partiallyUpdateLecture(id,updatedLecture);
+        return new ResponseEntity<>(lecture, HttpStatus.OK);
     }
 
     @DeleteMapping ("/{id}")
-    @ResponseBody
-    public void deleteLecture (@PathVariable("id")Long id){
+    public ResponseEntity<Void> deleteLecture (@PathVariable("id")Long id){
         lectureService.deleteLecture(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping("/students/{lectureName}/{studentId}")
-    @ResponseBody
-    public String selectLecture (@PathVariable("lectureName")String lectureName,@PathVariable("studentId") Long studentId){
-        Lecture lecture =lectureService.findLectureByName(lectureName);
-        Student student = studentService.findStudentById(studentId).orElseThrow();
-        lecture.getStudentsList().add(student);
-        student.getSelectedLectures().add(lecture);
-        studentService.partiallyUpdateStudent(studentId,student);
-        lectureService.partiallyUpdateLecture(lecture.getId(),lecture);
-        return null;
+    public ResponseEntity<String> selectLecture (@PathVariable("lectureName")String lectureName,@PathVariable("studentId") Long studentId){
+        lectureService.selectLecture(lectureName,studentId);
+        return ResponseEntity.ok("Lecture selected by the student");
     }
 }

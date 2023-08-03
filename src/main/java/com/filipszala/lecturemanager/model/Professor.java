@@ -1,9 +1,8 @@
 package com.filipszala.lecturemanager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -12,8 +11,10 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name="professors")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Professor implements User {
     @Id
     @GeneratedValue
@@ -22,6 +23,7 @@ public class Professor implements User {
     private String surname;
     @OneToMany
     @JoinColumn(name="professorId")
+    @JsonIgnore
     private List<Lecture> lectures = new ArrayList<>();
 
     public Professor(String name, String surname) {
