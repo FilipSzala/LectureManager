@@ -1,5 +1,7 @@
 package com.filipszala.lecturemanager.controller;
 
+import com.filipszala.lecturemanager.dto.professor.ProfessorDto;
+import com.filipszala.lecturemanager.dto.professor.ProfessorDtoMapper;
 import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.model.User;
 import com.filipszala.lecturemanager.repository.LectureRepository;
@@ -26,9 +28,14 @@ public class ProfessorController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Professor>> displayAllProfessor() {
-        List <Professor> foundUser  = professorService.findAllProfessors();
-        return new ResponseEntity<>(foundUser,HttpStatus.OK);
+    public ResponseEntity<List<ProfessorDto>> displayAllProfessors() {
+        List <ProfessorDto> foundUsers = ProfessorDtoMapper.mapToProfessorDtos(professorService.findAllProfessors());
+        return new ResponseEntity<>(foundUsers,HttpStatus.OK);
+    }
+    @GetMapping("/lectures")
+    public ResponseEntity<List<Professor>> displayAllProfessorsWithLectures() {
+        List <Professor> foundUsers = professorService.findAllProfessorsWithLectures();
+        return new ResponseEntity<>(foundUsers,HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

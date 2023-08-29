@@ -19,9 +19,9 @@ public class Student implements User {
     private Long studentId;
     private String name;
     private String surname;
-    @ManyToMany(mappedBy = "studentsList", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Lecture> selectedLectures = new ArrayList<>();
+    private List<Lecture> lectures = new ArrayList<>();
 
     public Student(String name, String surname) {
         this.name = name;

@@ -11,4 +11,6 @@ import java.util.List;
 public interface LectureRepository extends JpaRepository<Lecture,Long>{
     @Query(value = "SELECT * FROM lectures WHERE name = :name", nativeQuery = true)
     List<Lecture>findLecturesByName(@Param("name") String name);
+
+    List<Lecture> findAllByProfessorIdIn(List<Long> ids);
 }

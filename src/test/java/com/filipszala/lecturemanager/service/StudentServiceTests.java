@@ -56,7 +56,7 @@ public class StudentServiceTests {
                 .name("test")
                 .surname("test")
                 .studentId(id)
-                .selectedLectures(lectures)
+                .lectures(lectures)
                 .build();
         when(studentRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(oldStudent));
         when(studentRepository.save(Mockito.any(Student.class))).thenReturn(student);
@@ -74,7 +74,7 @@ public class StudentServiceTests {
                 .name(null)
                 .surname("test")
                 .studentId(id)
-                .selectedLectures(lectures)
+                .lectures(lectures)
                 .build();
         assertThatThrownBy(() -> studentService.updateStudent(id,student))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -87,7 +87,7 @@ public class StudentServiceTests {
                 .name("test")
                 .surname("test")
                 .studentId(1L)
-                .selectedLectures(lectures)
+                .lectures(lectures)
                 .build();
         assertThatThrownBy(() -> studentService.updateStudent(id,student))
                 .isInstanceOf(NullPointerException.class);
@@ -102,7 +102,7 @@ public class StudentServiceTests {
                 .name("test")
                 .surname("test")
                 .studentId(id)
-                .selectedLectures(lectures)
+                .lectures(lectures)
                 .build();
         when(studentRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(oldStudent));
         when(studentRepository.save(Mockito.any(Student.class))).thenReturn(student);
@@ -127,7 +127,7 @@ public class StudentServiceTests {
                 .name("test")
                 .surname("test")
                 .studentId(1L)
-                .selectedLectures(lectures)
+                .lectures(lectures)
                 .build();
         assertThatThrownBy(() -> studentService.partiallyUpdateStudent(id,student))
                 .isInstanceOf(NullPointerException.class);

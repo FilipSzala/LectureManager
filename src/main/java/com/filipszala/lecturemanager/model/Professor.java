@@ -23,7 +23,6 @@ public class Professor implements User {
     private String surname;
     @OneToMany
     @JoinColumn(name="professorId")
-    @JsonIgnore
     private List<Lecture> lectures = new ArrayList<>();
 
     public Professor(String name, String surname) {

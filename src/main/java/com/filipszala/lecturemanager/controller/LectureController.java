@@ -1,5 +1,7 @@
 package com.filipszala.lecturemanager.controller;
 
+import com.filipszala.lecturemanager.dto.lecture.LectureDto;
+import com.filipszala.lecturemanager.dto.lecture.LectureDtoMapper;
 import com.filipszala.lecturemanager.model.Lecture;
 import com.filipszala.lecturemanager.service.LectureService;
 import com.filipszala.lecturemanager.service.StudentService;
@@ -13,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/lectures")
 public class LectureController {
+
     private LectureService lectureService;
     private StudentService studentService;
     @Autowired
@@ -21,11 +24,15 @@ public class LectureController {
         this.studentService = studentService;
     }
     @GetMapping("")
-    public ResponseEntity<List<Lecture>> displayAllLectures(){
-
-        List<Lecture>foundLectures = lectureService.findAllLectures();
+    public ResponseEntity<List<LectureDto>> displayAllLectures(){
+        List<LectureDto>foundLectures =LectureDtoMapper.mapToLectureDtos(lectureService.findAllLectures());
         return new ResponseEntity<>(foundLectures, HttpStatus.OK);
     }
+ /*   @GetMapping("")
+    public ResponseEntity<List<LectureDto>> displayAllLecturesWithStudents(){
+        List<LectureDto>foundLectures =LectureDtoMapper.mapToLectureDtos(lectureService.findAllLectures());
+        return new ResponseEntity<>(foundLectures, HttpStatus.OK);
+    }*/
 
     @GetMapping("/{id}")
     public ResponseEntity<Lecture> displayLectureById(@PathVariable("id") Long id){

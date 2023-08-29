@@ -1,6 +1,8 @@
 package com.filipszala.lecturemanager.service;
 
+import com.filipszala.lecturemanager.model.Lecture;
 import com.filipszala.lecturemanager.model.Professor;
+import com.filipszala.lecturemanager.repository.LectureRepository;
 import com.filipszala.lecturemanager.repository.ProfessorRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -17,9 +20,11 @@ import java.util.Optional;
 @NoArgsConstructor
 public class ProfessorService {
     private ProfessorRepository professorRepository;
+    private LectureRepository lectureRepository;
     @Autowired
-    public ProfessorService(ProfessorRepository professorRepository) {
+    public ProfessorService(ProfessorRepository professorRepository,LectureRepository lectureRepository) {
         this.professorRepository = professorRepository;
+        this.lectureRepository = lectureRepository;
     }
     public Professor save(Professor professor){
         if (professor.getName() == null || professor.getSurname() == null) {
@@ -32,6 +37,23 @@ public class ProfessorService {
     public List<Professor> findAllProfessors(){
         return professorRepository.findAll();
     }
+    public List <Professor> findAllProfessorsWithLectures(){
+        List <Professor> professors = professorRepository.findAll();
+        List <Long> ids = professors.stream()
+                .map(professor -> professor.getProfessorId())
+                .collect(Collectors.toList());
+
+        List<Lecture> lectures = lectureRepository.findAllByProfessorIdIn(ids);
+        professors.forEach(professor -> professor.setLectures(extractLectures(lectures,professor.getProfessorId())));
+        return professors;
+    }
+
+    private List<Lecture> extractLectures (List<Lecture> lectures, long id){
+        return lectures.stream()
+                .filter(lecutre -> lecutre.getProfessorId() == id)
+                .collect(Collectors.toList());
+    }
+
     public Optional<Professor> findProfessorById (Long id){
         if (id==null){
             throw new NullPointerException("Id can't be null");

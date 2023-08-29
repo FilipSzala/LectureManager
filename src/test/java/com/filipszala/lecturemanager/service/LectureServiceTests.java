@@ -1,7 +1,6 @@
 package com.filipszala.lecturemanager.service;
 
 import com.filipszala.lecturemanager.model.Lecture;
-import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.model.Student;
 import com.filipszala.lecturemanager.repository.LectureRepository;
 import com.filipszala.lecturemanager.repository.StudentRepository;
@@ -70,7 +69,7 @@ public class LectureServiceTests {
                 .name("test")
                 .place("test")
                 .professorId(1L)
-                .studentsList(students)
+                .students(students)
                 .build();
         when(lectureRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(oldLecture));
         when(lectureRepository.save(Mockito.any(Lecture.class))).thenReturn(lecture);
@@ -85,7 +84,7 @@ public class LectureServiceTests {
                 .name(null)
                 .place("test")
                 .professorId(1L)
-                .studentsList(students)
+                .students(students)
                 .build();
        assertThatThrownBy(()->lectureService.updateLecture(id,lecture)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -97,7 +96,7 @@ public class LectureServiceTests {
                 .name("test")
                 .place("test")
                 .professorId(1L)
-                .studentsList(students)
+                .students(students)
                 .build();
         assertThatThrownBy(()->lectureService.updateLecture(id,lecture)).isInstanceOf(NullPointerException.class);
     }
@@ -110,7 +109,7 @@ public class LectureServiceTests {
                 .name("test")
                 .place("test")
                 .professorId(1L)
-                .studentsList(students)
+                .students(students)
                 .build();
         when(lectureRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(oldLecture));
         when(lectureRepository.save(Mockito.any(Lecture.class))).thenReturn(lecture);
@@ -129,7 +128,7 @@ public class LectureServiceTests {
                 .name("test")
                 .place("test")
                 .professorId(1L)
-                .studentsList(students)
+                .students(students)
                 .build();
         assertThatThrownBy(() -> lectureService.partiallyUpdateLecture(0L,lecture))
                 .isInstanceOf(IllegalArgumentException.class);

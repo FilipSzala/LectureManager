@@ -47,7 +47,7 @@ public class StudentService {
         if (updatedStudent==null){
             throw new IllegalArgumentException("Updated student can't be empty");
         }
-        if (updatedStudent.getSurname()==null||updatedStudent.getName()==null||updatedStudent.getStudentId()==null||updatedStudent.getSelectedLectures().isEmpty()){
+        if (updatedStudent.getSurname()==null||updatedStudent.getName()==null||updatedStudent.getStudentId()==null||updatedStudent.getLectures().isEmpty()){
             throw new IllegalArgumentException("Fields of student can't be empty");
         }
         else if (id==null){
@@ -70,8 +70,8 @@ public class StudentService {
             throw new IllegalArgumentException("Id can't be less than 1");
         }
         Student student =findStudentById(id).orElseThrow();
-        if(updatedStudent.getSelectedLectures()!=null){
-            student.setSelectedLectures(updatedStudent.getSelectedLectures());
+        if(updatedStudent.getLectures()!=null){
+            student.setLectures(updatedStudent.getLectures());
         }
         if(updatedStudent.getName()!=null){
             student.setName(updatedStudent.getName());

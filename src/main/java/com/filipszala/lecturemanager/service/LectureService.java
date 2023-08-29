@@ -1,8 +1,10 @@
 package com.filipszala.lecturemanager.service;
 
+import com.filipszala.lecturemanager.dto.lecture.LectureDtoMapper;
 import com.filipszala.lecturemanager.model.Lecture;
 import com.filipszala.lecturemanager.model.Student;
 import com.filipszala.lecturemanager.repository.LectureRepository;
+import com.filipszala.lecturemanager.repository.StudentRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -19,11 +22,15 @@ import java.util.Optional;
 public class LectureService {
     private LectureRepository lectureRepository;
     private StudentService studentService;
+    private StudentRepository studentRepository;
+
     @Autowired
-    public LectureService(LectureRepository lectureRepository,StudentService studentService) {
+    public LectureService(LectureRepository lectureRepository, StudentService studentService, StudentRepository studentRepository) {
         this.lectureRepository = lectureRepository;
         this.studentService = studentService;
+        this.studentRepository = studentRepository;
     }
+
     public Lecture save (Lecture lecture){
         if (lecture.getName() == null || lecture.getPlace() == null) {
             throw new IllegalArgumentException("Fields of lecture can't be empty");
@@ -34,6 +41,22 @@ public class LectureService {
     }
     public List<Lecture> findAllLectures (){
         return lectureRepository.findAll();
+    }
+    public List<Lecture> findAllLecturesWithStudents (){
+/*        List <Lecture> lectures = lectureRepository.findAll();
+        List <Long> ids = lectures.stream()
+                .map(lecture -> lecture.getId())
+                .collect(Collectors.toList());
+
+        List <Student> students = studentRepository.findAllByLectureIdIn(ids);*/
+
+
+        return lectureRepository.findAll();
+    }
+    private List<Student> extractLectures (List<Student> students, long id){
+        return students.stream()
+                .filter(student -> student.getStudentId() == id)
+                .collect(Collectors.toList());
     }
     public Optional<Lecture> findLectureById(Long id){
         if (id==null){
@@ -57,7 +80,7 @@ public class LectureService {
         if (updatedLecture==null){
             throw new NullPointerException("Updated lecture can't be null");
         }
-        if (updatedLecture.getPlace()==null||updatedLecture.getStudentsList()==null||updatedLecture.getProfessorId()==null||updatedLecture.getName()==null){
+        if (updatedLecture.getPlace()==null||updatedLecture.getStudents()==null||updatedLecture.getProfessorId()==null||updatedLecture.getName()==null){
             throw new IllegalArgumentException("Fields of lecture can't be empty");
         }
         else if (id==null){
@@ -80,8 +103,8 @@ public class LectureService {
             throw new IllegalArgumentException("Id can't be less than 1");
         }
         Lecture lecture = findLectureById(id).orElseThrow();
-        if(updatedLecture.getStudentsList()!=null){
-            lecture.setStudentsList(updatedLecture.getStudentsList());
+        if(updatedLecture.getStudents()!=null){
+            lecture.setStudents(updatedLecture.getStudents());
         }
         if (updatedLecture.getProfessorId()!=null){
             lecture.setProfessorId(updatedLecture.getProfessorId());
@@ -117,9 +140,9 @@ public class LectureService {
         }
         Lecture lecture =findLectureByName(lectureName);
         Student student = studentService.findStudentById(studentId).orElseThrow();
-        lecture.getStudentsList().add(student);
-        student.getSelectedLectures().add(lecture);
-        studentService.partiallyUpdateStudent(studentId,student);
+        lecture.addStudent(student);
+        //cascade in class Lecture allows us to add single object from
+        //relationship to the database, another one will be automatically added.
         partiallyUpdateLecture(lecture.getId(),lecture);
     }
 }

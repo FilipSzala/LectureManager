@@ -13,4 +13,5 @@ public class LectureManagerApplication {
 		SpringApplication.run(LectureManagerApplication.class, args);
 	}
 
+
 }
