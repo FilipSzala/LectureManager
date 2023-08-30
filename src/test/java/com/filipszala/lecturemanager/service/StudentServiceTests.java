@@ -55,7 +55,7 @@ public class StudentServiceTests {
         Student student = Student.builder()
                 .name("test")
                 .surname("test")
-                .studentId(id)
+                .id(id)
                 .lectures(lectures)
                 .build();
         when(studentRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(oldStudent));
@@ -73,7 +73,7 @@ public class StudentServiceTests {
         Student student = Student.builder()
                 .name(null)
                 .surname("test")
-                .studentId(id)
+                .id(id)
                 .lectures(lectures)
                 .build();
         assertThatThrownBy(() -> studentService.updateStudent(id,student))
@@ -86,7 +86,7 @@ public class StudentServiceTests {
         Student student = Student.builder()
                 .name("test")
                 .surname("test")
-                .studentId(1L)
+                .id(1L)
                 .lectures(lectures)
                 .build();
         assertThatThrownBy(() -> studentService.updateStudent(id,student))
@@ -101,7 +101,7 @@ public class StudentServiceTests {
         Student student = Student.builder()
                 .name("test")
                 .surname("test")
-                .studentId(id)
+                .id(id)
                 .lectures(lectures)
                 .build();
         when(studentRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(oldStudent));
@@ -126,7 +126,7 @@ public class StudentServiceTests {
         Student student = Student.builder()
                 .name("test")
                 .surname("test")
-                .studentId(1L)
+                .id(1L)
                 .lectures(lectures)
                 .build();
         assertThatThrownBy(() -> studentService.partiallyUpdateStudent(id,student))
@@ -152,20 +152,20 @@ public class StudentServiceTests {
     }
     @Test
     public void deleteStudentById_correctId_deleteStudent(){
-        Student student = Student.builder().studentId(1L).build();
+        Student student = Student.builder().id(1L).build();
         when (studentRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.ofNullable(student));
-        assertAll(() -> studentService.deleteStudent(student.getStudentId()));
+        assertAll(() -> studentService.deleteStudent(student.getId()));
     }
     @Test
     public void deleteStudentById_idIsNull_returnException(){
-        Student student = Student.builder().studentId(null).build();
-        assertThatThrownBy(() ->  studentService.deleteStudent(student.getStudentId()))
+        Student student = Student.builder().id(null).build();
+        assertThatThrownBy(() ->  studentService.deleteStudent(student.getId()))
                 .isInstanceOf(NullPointerException.class);
     }
     @Test
     public void deleteStudentById_idLessThanExpected_returnException(){
-        Student student = Student.builder().studentId(0L).build();
-        assertThatThrownBy(() ->  studentService.deleteStudent(student.getStudentId()))
+        Student student = Student.builder().id(0L).build();
+        assertThatThrownBy(() ->  studentService.deleteStudent(student.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

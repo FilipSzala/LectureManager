@@ -68,7 +68,6 @@ public class LectureServiceTests {
         Lecture lecture = Lecture.builder()
                 .name("test")
                 .place("test")
-                .professorId(1L)
                 .students(students)
                 .build();
         when(lectureRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(oldLecture));
@@ -83,7 +82,6 @@ public class LectureServiceTests {
         Lecture lecture = Lecture.builder()
                 .name(null)
                 .place("test")
-                .professorId(1L)
                 .students(students)
                 .build();
        assertThatThrownBy(()->lectureService.updateLecture(id,lecture)).isInstanceOf(IllegalArgumentException.class);
@@ -95,7 +93,6 @@ public class LectureServiceTests {
         Lecture lecture = Lecture.builder()
                 .name("test")
                 .place("test")
-                .professorId(1L)
                 .students(students)
                 .build();
         assertThatThrownBy(()->lectureService.updateLecture(id,lecture)).isInstanceOf(NullPointerException.class);
@@ -108,7 +105,6 @@ public class LectureServiceTests {
         Lecture lecture = Lecture.builder()
                 .name("test")
                 .place("test")
-                .professorId(1L)
                 .students(students)
                 .build();
         when(lectureRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(oldLecture));
@@ -127,7 +123,6 @@ public class LectureServiceTests {
         Lecture lecture = Lecture.builder()
                 .name("test")
                 .place("test")
-                .professorId(1L)
                 .students(students)
                 .build();
         assertThatThrownBy(() -> lectureService.partiallyUpdateLecture(0L,lecture))
@@ -175,35 +170,13 @@ public class LectureServiceTests {
     }
 
     @Test
-    public void findLectureByName_nameIsCorrect_returnLecutre(){
-        Lecture lecture = Lecture.builder()
-                .name("Filip")
-                .build();
-        List <Lecture> lectures = new ArrayList<>();
-        lectures.add(lecture);
-        when(lectureRepository.findLecturesByName(Mockito.any(String.class))).thenReturn(lectures);
-        Lecture foundLecture = lectureService.findLectureByName(lecture.getName());
-        Assertions.assertThat(foundLecture).isNotNull();
-    }
-    @Test
-    public void findLectureByName_nameIsNull_returnException(){
-        assertThatThrownBy(() ->  lectureService.findLectureByName(null))
-                .isInstanceOf(NullPointerException.class);
-    }
-    @Test
-    public void findLectureByName_nameIsEmpty_returnException(){
-        assertThatThrownBy(() ->  lectureService.findLectureByName(""))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    public void selectLecture_lectureNameisNull_selectLecture(){
+    public void selectLecture_lectureIdIsNull_selectLecture(){
         assertThatThrownBy(() ->  lectureService.selectLecture(null,1L))
                 .isInstanceOf(NullPointerException.class);
 }
     @Test
-    public void selectLecture_studentIdIsNull_selectLecture(){
-        assertThatThrownBy(() ->  lectureService.selectLecture("test",null))
+    public void selectLecture_LectureIdIsLessThanExpected_selectLecture(){
+        assertThatThrownBy(() ->  lectureService.selectLecture(0L,null))
                 .isInstanceOf(NullPointerException.class);
     }
 }

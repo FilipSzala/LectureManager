@@ -27,6 +27,6 @@ public class DbInit implements CommandLineRunner {
     public void run(String... args) throws Exception {
         studentRepository.save(new Student("Filip","Szala"));
         professorRepository.save(new Professor("Marek","Mostowiak"));
-        lectureRepository.save(new Lecture("Math","lecture hall 10"));
+        /*lectureRepository.save(new Lecture("Math","lecture hall 10"));*/
     }
 }

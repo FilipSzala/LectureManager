@@ -16,11 +16,10 @@ import java.util.List;
 public class Student implements User {
     @Id
     @GeneratedValue
-    private Long studentId;
+    private Long id;
     private String name;
     private String surname;
     @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Lecture> lectures = new ArrayList<>();
 
     public Student(String name, String surname) {

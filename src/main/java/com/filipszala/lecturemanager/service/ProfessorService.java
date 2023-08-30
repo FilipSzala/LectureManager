@@ -37,23 +37,6 @@ public class ProfessorService {
     public List<Professor> findAllProfessors(){
         return professorRepository.findAll();
     }
-    public List <Professor> findAllProfessorsWithLectures(){
-        List <Professor> professors = professorRepository.findAll();
-        List <Long> ids = professors.stream()
-                .map(professor -> professor.getProfessorId())
-                .collect(Collectors.toList());
-
-        List<Lecture> lectures = lectureRepository.findAllByProfessorIdIn(ids);
-        professors.forEach(professor -> professor.setLectures(extractLectures(lectures,professor.getProfessorId())));
-        return professors;
-    }
-
-    private List<Lecture> extractLectures (List<Lecture> lectures, long id){
-        return lectures.stream()
-                .filter(lecutre -> lecutre.getProfessorId() == id)
-                .collect(Collectors.toList());
-    }
-
     public Optional<Professor> findProfessorById (Long id){
         if (id==null){
             throw new NullPointerException("Id can't be null");
@@ -66,7 +49,7 @@ public class ProfessorService {
         if (updatedProfessor==null){
             throw new IllegalArgumentException("Updated professor can't be empty");
         }
-        if (updatedProfessor.getSurname()==null||updatedProfessor.getName()==null||updatedProfessor.getProfessorId()==null||updatedProfessor.getLectures().isEmpty()){
+        if (updatedProfessor.getSurname()==null||updatedProfessor.getName()==null||updatedProfessor.getId()==null||updatedProfessor.getLectures().isEmpty()){
             throw new IllegalArgumentException("Fields of professor can't be empty");
         }
         else if (id==null){

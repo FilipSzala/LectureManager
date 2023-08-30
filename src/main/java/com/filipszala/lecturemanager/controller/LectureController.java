@@ -1,9 +1,13 @@
 package com.filipszala.lecturemanager.controller;
 
-import com.filipszala.lecturemanager.dto.lecture.LectureDto;
-import com.filipszala.lecturemanager.dto.lecture.LectureDtoMapper;
+import com.filipszala.lecturemanager.controller.dto.lecture.LectureDto;
+import com.filipszala.lecturemanager.controller.dto.lecture.LectureWithoutProfessorAndStudentDto;
+import com.filipszala.lecturemanager.controller.mapper.lecture.LectureDtoMapper;
+import com.filipszala.lecturemanager.controller.mapper.lecture.LectureWithoutProfessorAndStudentDtoMapper;
 import com.filipszala.lecturemanager.model.Lecture;
+import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.service.LectureService;
+import com.filipszala.lecturemanager.service.ProfessorService;
 import com.filipszala.lecturemanager.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,21 +22,24 @@ public class LectureController {
 
     private LectureService lectureService;
     private StudentService studentService;
+    private ProfessorService professorService;
     @Autowired
-    public LectureController(LectureService lectureService,StudentService studentService) {
+    public LectureController(LectureService lectureService,StudentService studentService,ProfessorService professorService) {
         this.lectureService = lectureService;
         this.studentService = studentService;
+        this.professorService = professorService;
     }
     @GetMapping("")
-    public ResponseEntity<List<LectureDto>> displayAllLectures(){
-        List<LectureDto>foundLectures =LectureDtoMapper.mapToLectureDtos(lectureService.findAllLectures());
-        return new ResponseEntity<>(foundLectures, HttpStatus.OK);
+    public ResponseEntity<List<LectureWithoutProfessorAndStudentDto>> displayAllLectures(){
+        List<LectureWithoutProfessorAndStudentDto> lectureDtos = LectureWithoutProfessorAndStudentDtoMapper.mapToLectureDtos(lectureService.findAllLectures());
+        return new ResponseEntity<>(lectureDtos, HttpStatus.OK);
     }
- /*   @GetMapping("")
-    public ResponseEntity<List<LectureDto>> displayAllLecturesWithStudents(){
-        List<LectureDto>foundLectures =LectureDtoMapper.mapToLectureDtos(lectureService.findAllLectures());
-        return new ResponseEntity<>(foundLectures, HttpStatus.OK);
-    }*/
+    @GetMapping("/professors/students")
+    public ResponseEntity<List<LectureDto>> displayAllLecturesWithProfessorsAndStudents(){
+        List<LectureDto> lectureDtos =LectureDtoMapper.mapToLectureDtos(lectureService.findAllLectures());
+        return new ResponseEntity<>(lectureDtos,HttpStatus.OK);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Lecture> displayLectureById(@PathVariable("id") Long id){
@@ -42,9 +49,10 @@ public class LectureController {
 
     @PostMapping("/professors/{id}")
     public ResponseEntity<Lecture> createLecture (@PathVariable("id")Long id,@RequestBody Lecture lecture){
-        lecture.setProfessorId(id);
+        Professor professor = professorService.findProfessorById(id).orElseThrow();
+        lecture.setProfessor(professor);
         Lecture savedLecture = lectureService.save(lecture);
-        return new ResponseEntity<>(savedLecture, HttpStatus.CREATED);
+        return new ResponseEntity<>(/*savedLecture, */HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -65,9 +73,9 @@ public class LectureController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("/students/{lectureName}/{studentId}")
-    public ResponseEntity<String> selectLecture (@PathVariable("lectureName")String lectureName,@PathVariable("studentId") Long studentId){
-        lectureService.selectLecture(lectureName,studentId);
+    @PatchMapping("/students/{lectureId}/{studentId}")
+    public ResponseEntity<String> selectLecture (@PathVariable("lectureId")Long lectureId,@PathVariable("studentId") Long studentId){
+        lectureService.selectLecture(lectureId,studentId);
         return ResponseEntity.ok("Lecture selected by the student");
     }
 }

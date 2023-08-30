@@ -1,13 +1,12 @@
-package com.filipszala.lecturemanager.dto.lecture;
+package com.filipszala.lecturemanager.controller.dto.lecture;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class LectureDto {
+public class LectureWithoutProfessorAndStudentDto {
     private Long id;
-    private Long professorId;
     private String name;
     private String place;
 }

@@ -2,7 +2,6 @@ package com.filipszala.lecturemanager.service;
 
 import com.filipszala.lecturemanager.model.Lecture;
 import com.filipszala.lecturemanager.model.Professor;
-import com.filipszala.lecturemanager.model.Student;
 import com.filipszala.lecturemanager.repository.ProfessorRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -61,7 +60,7 @@ public class ProfessorServiceTests {
         Professor professor = Professor.builder()
                 .name("test")
                 .surname("test")
-                .professorId(1L)
+                .id(1L)
                 .lectures(lectures)
                 .build();
         when(professorRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(oldProfessor));
@@ -79,7 +78,7 @@ public class ProfessorServiceTests {
         Professor professor = Professor.builder()
                 .name(null)
                 .surname("test")
-                .professorId(1L)
+                .id(1L)
                 .lectures(lectures)
                 .build();
         assertThatThrownBy(() -> professorService.updateProffesor(id,professor))
@@ -92,7 +91,7 @@ public class ProfessorServiceTests {
         Professor professor = Professor.builder()
                 .name("test")
                 .surname("test")
-                .professorId(1L)
+                .id(1L)
                 .lectures(lectures)
                 .build();
         assertThatThrownBy(() -> professorService.updateProffesor(id,professor))
@@ -107,7 +106,7 @@ public class ProfessorServiceTests {
         Professor professor = Professor.builder()
                 .name("test")
                 .surname("test")
-                .professorId(1L)
+                .id(1L)
                 .lectures(lectures)
                 .build();
         when(professorRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(oldProfessor));
@@ -131,7 +130,7 @@ public class ProfessorServiceTests {
         Professor professor = Professor.builder()
                 .name("test")
                 .surname("test")
-                .professorId(1L)
+                .id(1L)
                 .lectures(lectures)
                 .build();
         assertThatThrownBy(() -> professorService.partiallyUpdateProffesor(id,professor))
@@ -159,21 +158,21 @@ public class ProfessorServiceTests {
     }
     @Test
     public void deleteProfessorById_correctId_deleteProfessor(){
-        Professor professor = Professor.builder().professorId(1L).build();
+        Professor professor = Professor.builder().id(1L).build();
         when (professorRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.ofNullable(professor));
-        assertAll(() -> professorService.deleteProffesor(professor.getProfessorId()));
+        assertAll(() -> professorService.deleteProffesor(professor.getId()));
     }
 
     @Test
     public void deleteProfessorById_idIsNull_returnException(){
-        Professor professor = Professor.builder().professorId(null).build();
-        assertThatThrownBy(() ->  professorService.deleteProffesor(professor.getProfessorId()))
+        Professor professor = Professor.builder().id(null).build();
+        assertThatThrownBy(() ->  professorService.deleteProffesor(professor.getId()))
                 .isInstanceOf(NullPointerException.class);
     }
     @Test
     public void deleteProfessorById_idIsLessThanExpected_returnException(){
-        Professor professor = Professor.builder().professorId(0L).build();
-        assertThatThrownBy(() ->  professorService.deleteProffesor(professor.getProfessorId()))
+        Professor professor = Professor.builder().id(0L).build();
+        assertThatThrownBy(() ->  professorService.deleteProffesor(professor.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

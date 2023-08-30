@@ -1,7 +1,9 @@
 package com.filipszala.lecturemanager.controller;
 
-import com.filipszala.lecturemanager.dto.professor.ProfessorDto;
-import com.filipszala.lecturemanager.dto.professor.ProfessorDtoMapper;
+import com.filipszala.lecturemanager.controller.dto.professor.ProfessorDto;
+import com.filipszala.lecturemanager.controller.dto.professor.ProfessorWithoutLectureDto;
+import com.filipszala.lecturemanager.controller.mapper.professor.ProfessorDtoMapper;
+import com.filipszala.lecturemanager.controller.mapper.professor.ProfessorWithoutLectureDtoMapper;
 import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.model.User;
 import com.filipszala.lecturemanager.repository.LectureRepository;
@@ -11,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -28,14 +29,14 @@ public class ProfessorController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ProfessorDto>> displayAllProfessors() {
-        List <ProfessorDto> foundUsers = ProfessorDtoMapper.mapToProfessorDtos(professorService.findAllProfessors());
-        return new ResponseEntity<>(foundUsers,HttpStatus.OK);
+    public ResponseEntity<List<ProfessorWithoutLectureDto>> displayAllProfessors() {
+        List <ProfessorWithoutLectureDto> professorDtos = ProfessorWithoutLectureDtoMapper.mapToProfessorWithoutLectureDtos(professorService.findAllProfessors());
+        return new ResponseEntity<>(professorDtos,HttpStatus.OK);
     }
     @GetMapping("/lectures")
-    public ResponseEntity<List<Professor>> displayAllProfessorsWithLectures() {
-        List <Professor> foundUsers = professorService.findAllProfessorsWithLectures();
-        return new ResponseEntity<>(foundUsers,HttpStatus.OK);
+    public  ResponseEntity<List<ProfessorDto>> displayAllProfessorsWithLectures() {
+        List <ProfessorDto> professorDtos = ProfessorDtoMapper.mapToProfessorDtos(professorService.findAllProfessors());
+        return  new ResponseEntity<>(professorDtos,HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

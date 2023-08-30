@@ -18,16 +18,17 @@ public class Lecture {
     @GeneratedValue
     @Id
     private Long id;
-    private Long professorId;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinTable(name = "student_lecture",
             joinColumns = @JoinColumn(name = "lecture_id"),
             inverseJoinColumns = @JoinColumn(name ="student_id"))
-    @JsonIgnore
-
     private List <Student> students = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Professor professor;
     private String name;
     private String place;
+
+
 
     public Lecture(String name, String place) {
         this.name = name;

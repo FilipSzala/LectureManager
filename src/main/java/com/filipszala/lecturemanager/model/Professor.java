@@ -1,9 +1,7 @@
 package com.filipszala.lecturemanager.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +16,11 @@ import java.util.List;
 public class Professor implements User {
     @Id
     @GeneratedValue
-    private Long professorId;
+    private Long id;
     private String name;
     private String surname;
-    @OneToMany
-    @JoinColumn(name="professorId")
+    @OneToMany (mappedBy = "professor")
     private List<Lecture> lectures = new ArrayList<>();
-
     public Professor(String name, String surname) {
         this.name = name;
         this.surname = surname;

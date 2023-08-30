@@ -47,7 +47,7 @@ public class StudentService {
         if (updatedStudent==null){
             throw new IllegalArgumentException("Updated student can't be empty");
         }
-        if (updatedStudent.getSurname()==null||updatedStudent.getName()==null||updatedStudent.getStudentId()==null||updatedStudent.getLectures().isEmpty()){
+        if (updatedStudent.getSurname()==null||updatedStudent.getName()==null||updatedStudent.getId()==null||updatedStudent.getLectures().isEmpty()){
             throw new IllegalArgumentException("Fields of student can't be empty");
         }
         else if (id==null){

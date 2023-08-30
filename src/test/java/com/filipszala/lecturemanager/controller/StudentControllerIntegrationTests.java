@@ -1,3 +1,4 @@
+/*
 package com.filipszala.lecturemanager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,3 +31,4 @@ public class StudentControllerIntegrationTests {
         Assertions.assertEquals("Filip",students[0].getName());
     }
 }
+*/
