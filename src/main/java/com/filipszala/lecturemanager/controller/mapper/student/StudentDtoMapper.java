@@ -16,7 +16,7 @@ public class StudentDtoMapper {
                 .map(student -> mapToStudentDto(student))
                 .collect(Collectors.toList());
     }
-    private static StudentDto mapToStudentDto (Student student){
+    public static StudentDto mapToStudentDto (Student student){
         List <LectureWithoutProfessorAndStudentDto> x =LectureWithoutProfessorAndStudentDtoMapper.mapToLectureDtos(student.getLectures());
         return StudentDto.builder()
                 .id(student.getId())

@@ -17,7 +17,7 @@ public class LectureDtoMapper {
                 .map(lecture -> mapToLectureDto(lecture))
                 .collect(Collectors.toList());
     }
-    private static LectureDto mapToLectureDto (Lecture lecture){
+    public static LectureDto mapToLectureDto (Lecture lecture){
         return LectureDto.builder()
                 .id(lecture.getId())
                 .name(lecture.getName())

@@ -17,7 +17,7 @@ public class ProfessorDtoMapper {
                 .map(professor -> mapToProfessorDto(professor))
                 .collect(Collectors.toList());
     }
-    private static ProfessorDto mapToProfessorDto (Professor professor){
+    public static ProfessorDto mapToProfessorDto (Professor professor){
         return ProfessorDto.builder()
                 .id(professor.getId())
                 .name(professor.getName())

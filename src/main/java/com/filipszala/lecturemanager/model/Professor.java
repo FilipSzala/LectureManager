@@ -25,19 +25,4 @@ public class Professor implements User {
         this.name = name;
         this.surname = surname;
     }
-
-    @Override
-    public void displayUser() {
-
-    }
-
-    @Override
-    public User deleteUser() {
-        return null;
-    }
-
-    @Override
-    public User updateUser() {
-        return null;
-    }
 }

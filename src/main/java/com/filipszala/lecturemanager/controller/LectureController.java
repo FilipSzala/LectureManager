@@ -42,8 +42,8 @@ public class LectureController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Lecture> displayLectureById(@PathVariable("id") Long id){
-        Lecture lecture = lectureService.findLectureById(id).orElseThrow();
+    public ResponseEntity<LectureDto> displayLectureById(@PathVariable("id") Long id){
+        LectureDto lecture = LectureDtoMapper.mapToLectureDto(lectureService.findLectureById(id).orElseThrow());
         return new ResponseEntity<>(lecture, HttpStatus.OK);
     }
 

@@ -39,9 +39,9 @@ public class StudentController {
         return new ResponseEntity<>(studentDtos, HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<User> displayStudentById(@PathVariable("id")Long id){
-        User user =studentService.findStudentById(id).orElseThrow();
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<StudentDto> displayStudentById(@PathVariable("id")Long id){
+        StudentDto studentDto =StudentDtoMapper.mapToStudentDto(studentService.findStudentById(id).orElseThrow());
+        return new ResponseEntity<>(studentDto, HttpStatus.OK);
     }
     @PostMapping("")
     public ResponseEntity<User> createStudent(@RequestBody Student student){

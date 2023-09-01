@@ -40,9 +40,9 @@ public class ProfessorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> displayProfessorById(@PathVariable("id") Long id) {
-        User user =professorService.findProfessorById(id).orElseThrow();
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<ProfessorDto> displayProfessorById(@PathVariable("id") Long id) {
+        ProfessorDto professorDto =ProfessorDtoMapper.mapToProfessorDto(professorService.findProfessorById(id).orElseThrow());
+        return new ResponseEntity<>(professorDto, HttpStatus.OK);
     }
 
     @PostMapping("")
