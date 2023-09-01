@@ -1,6 +1,5 @@
 package com.filipszala.lecturemanager.controller;
 
-import aj.org.objectweb.asm.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.filipszala.lecturemanager.controller.dto.lecture.LectureDto;
 import com.filipszala.lecturemanager.model.Lecture;
@@ -8,24 +7,22 @@ import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.model.Student;
 import com.filipszala.lecturemanager.repository.LectureRepository;
 import com.filipszala.lecturemanager.repository.ProfessorRepository;
-import com.filipszala.lecturemanager.repository.StudentRepository;
-import com.filipszala.lecturemanager.service.LectureService;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,11 +32,7 @@ public class LectureControllerIntegrationTests {
     @Autowired
     LectureRepository lectureRepository;
     @Autowired
-    StudentRepository studentRepository;
-    @Autowired
     ProfessorRepository professorRepository;
-    @Autowired
-    LectureService lectureService;
     @Autowired
     ObjectMapper objectMapper;
 
@@ -47,122 +40,178 @@ public class LectureControllerIntegrationTests {
     @Transactional
     public void shouldGetSingleLecture() throws Exception {
         //given
-        Student student = new Student("Test","Test");
-        ArrayList<Student> students = new ArrayList<>();
-        students.add(student);
-
-        Professor professor = new Professor("Test2","Test2");
-
-        Lecture newLecture = new Lecture();
-        newLecture.setName("Filip");
-        newLecture.setPlace("lecture hall");
-        newLecture.setStudents(students);
-        newLecture.setProfessor(professor);
-
-        lectureRepository.save(newLecture);
+        Lecture lecture = createListOfLecture().get(0);
+        lectureRepository.save(lecture);
 
         //when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/lectures/"+newLecture.getId()))
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/lectures/"+lecture.getId()))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(status().is(200))
                 .andReturn();
 
         //then
-        LectureDto lecture = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), LectureDto.class);
-        assertThat(lecture).isNotNull();
-        assertThat(lecture.getName()).isEqualTo("Filip");
-        assertThat(lecture.getId()).isEqualTo(1L);
-        assertThat(lecture.getPlace()).isEqualTo("lecture hall");
-        assertThat(lecture.getStudentWithoutLectureDtos()).size().isEqualTo(1);
-        assertThat(lecture.getStudentWithoutLectureDtos().get(0).getSurname()).isEqualTo("Test");
-        assertThat(lecture.getProfessorWithoutLectureDto()).isNotNull();
-        assertThat(lecture.getProfessorWithoutLectureDto().getName()).isEqualTo("Test2");
+        LectureDto lectureDto = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), LectureDto.class);
+        assertThat(lectureDto).isNotNull();
+        assertThat(lectureDto.getName()).isEqualTo("Filip");
+        assertThat(lectureDto.getId()).isEqualTo(1L);
+        assertThat(lectureDto.getPlace()).isEqualTo("lecture hall");
+        assertThat(lectureDto.getStudentWithoutLectureDtos()).size().isEqualTo(1);
+        assertThat(lectureDto.getStudentWithoutLectureDtos().get(0).getSurname()).isEqualTo("Test");
+        assertThat(lectureDto.getProfessorWithoutLectureDto()).isNotNull();
+        assertThat(lectureDto.getProfessorWithoutLectureDto().getName()).isEqualTo("Test2");
 
     }
     @Test
     @Transactional
     public void shouldGetListOfLecture() throws Exception {
         //given
-        Student student = new Student("Test","Test");
-        ArrayList<Student> students = new ArrayList<>();
-        students.add(student);
+        List<Lecture> lectures = createListOfLecture();
 
-        Professor professor = new Professor("Test2","Test2");
-
-        Lecture lecture = new Lecture();
-        lecture.setName("Filip");
-        lecture.setPlace("lecture hall");
-        lecture.setStudents(students);
-        lecture.setProfessor(professor);
-
-        Lecture lecture2 = new Lecture();
-        lecture2.setName("Filip");
-        lecture2.setPlace("lecture hall");
-        lecture2.setStudents(students);
-        lecture2.setProfessor(professor);
-
-        professorRepository.save(professor);
-        lectureRepository.save(lecture);
-        lectureRepository.save(lecture2);
+        professorRepository.save(lectures.get(0).getProfessor());
+        professorRepository.save(lectures.get(1).getProfessor());
+        lectureRepository.save(lectures.get(0));
+        lectureRepository.save(lectures.get(1));
 
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/lectures"))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(status().is(200))
                 .andReturn();
 
         //then
-        LectureDto[] lectures = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),LectureDto[].class);
-        assertThat(lectures).isNotNull();
-        assertThat(lectures.length).isEqualTo(2);
-        assertThat(lectures[0].getName()).isEqualTo("Filip");
+        LectureDto[] lecturesDto = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),LectureDto[].class);
+        assertThat(lecturesDto).isNotNull();
+        assertThat(lecturesDto.length).isEqualTo(2);
+        assertThat(lecturesDto[0].getName()).isEqualTo("Filip");
 
     }
     @Test
+    @Transactional
     public void shouldGetSingelLectureById() throws Exception {
-        Professor professor = new Professor("Test","Test");
+        Lecture lecture = createListOfLecture().get(0);
 
-
-        Lecture lecture = new Lecture();
-        lecture.setId(1L);
-        lecture.setName("Filip");
-        lecture.setPlace("lecture hall");
-        lecture.setProfessor(professor);
-
-        professorRepository.save(professor);
+        professorRepository.save(lecture.getProfessor());
         lectureRepository.save(lecture);
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/lectures/"+lecture.getId()))
-                .andExpect(MockMvcResultMatchers.status().is(200)).andReturn();
+                .andExpect(status().is(200)).andReturn();
 
         LectureDto lectureDto = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), LectureDto.class);
         assertThat(lectureDto).isNotNull();
         assertThat(lectureDto).isInstanceOf(LectureDto.class);
+    }
+
+    @Test
+    @Transactional
+    public void shouldPartiallyUpdateLecture() throws Exception {
+        Lecture lecture = createListOfLecture().get(0);
+        Lecture lecture2 = createListOfLecture().get(1);
+
+        professorRepository.save(lecture.getProfessor());
+        professorRepository.save(lecture2.getProfessor());
+        lectureRepository.save(lecture);
+
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                        .patch("/lectures/{id}",lecture.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(lecture2)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        LectureDto lectureCheck = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), LectureDto.class);
+        assertThat(lectureCheck.getName()).isEqualTo("Filip2");
+        assertThat(lectureCheck.getId()).isEqualTo(lecture.getId());
 
     }
 
     @Test
-    public void test() throws Exception {
-        Professor professor = new Professor("Test","Test");
+    @Transactional
+    public void shouldUpdateLecture() throws Exception {
+        Lecture lecture = createListOfLecture().get(0);
+        Lecture lecture2 = createListOfLecture().get(1);
+
+        professorRepository.save(lecture.getProfessor());
+        professorRepository.save(lecture2.getProfessor());
+        lectureRepository.save(lecture);
 
 
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                        .put("/lectures/{id}",lecture.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(lecture2)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        LectureDto lectureCheck = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), LectureDto.class);
+        assertThat(lectureCheck.getName()).isEqualTo("Filip2");
+        assertThat(lectureCheck.getId()).isEqualTo(lecture.getId());
+    }
+    @Test
+    @Transactional
+    public void shouldCreateLecture() throws Exception {
+        Lecture lecture = createListOfLecture().get(0);
+        Professor professor = createProfessor();
+        professorRepository.save(professor);
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                        .post("/lectures/professors/{id}",professor.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(lecture)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        LectureDto lectureDto = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), LectureDto.class);
+        assertThat(lectureDto.getName()).isEqualTo(lecture.getName());
+        assertThat(lectureDto.getProfessorWithoutLectureDto()).isNotNull();
+    }
+    @Test
+    @Transactional
+    public void shouldDeleteLecture() throws Exception {
+        Lecture lecture = createListOfLecture().get(0);
+
+        professorRepository.save(lecture.getProfessor());
+        lectureRepository.save(lecture);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/lectures/" + lecture.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+    }
+
+    private List<Student> createListOfStudent(){
+        Student student = new Student("Test","Test");
+        ArrayList<Student> students = new ArrayList<>();
+        students.add(student);
+        return students;
+    }
+    private Professor createProfessor(){
+        Professor professor = new Professor("Test2","Test2");
+        return professor;
+    }
+    private List <Lecture> createListOfLecture(){
         Lecture lecture = new Lecture();
         lecture.setId(1L);
         lecture.setName("Filip");
         lecture.setPlace("lecture hall");
-        lecture.setProfessor(professor);
+        lecture.setStudents(createListOfStudent());
+        lecture.setProfessor(createProfessor());
 
-        professorRepository.save(professor);
-        lectureRepository.save(lecture);
+        Lecture lecture2 = new Lecture();
+        lecture2.setId(2L);
+        lecture2.setName("Filip2");
+        lecture2.setPlace("lecture hall2");
+        lecture2.setStudents(createListOfStudent());
+        lecture2.setProfessor(createProfessor());
 
-        lecture.setName("Test");
-
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.patch("/lectures/"+lecture.getId()))
-                .andExpect(MockMvcResultMatchers.status().is(200)).andReturn();
-
-        LectureDto lectureDto = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), LectureDto.class);
-        assertThat(lecture.getName()).isEqualTo("Test");
-
+        List<Lecture> lectures = new ArrayList<>();
+        lectures.add(lecture);
+        lectures.add(lecture2);
+        return lectures;
     }
 }
 

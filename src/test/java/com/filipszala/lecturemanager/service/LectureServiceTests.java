@@ -169,14 +169,4 @@ public class LectureServiceTests {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    public void selectLecture_lectureIdIsNull_selectLecture(){
-        assertThatThrownBy(() ->  lectureService.selectLecture(null,1L))
-                .isInstanceOf(NullPointerException.class);
-}
-    @Test
-    public void selectLecture_LectureIdIsLessThanExpected_selectLecture(){
-        assertThatThrownBy(() ->  lectureService.selectLecture(0L,null))
-                .isInstanceOf(NullPointerException.class);
-    }
 }

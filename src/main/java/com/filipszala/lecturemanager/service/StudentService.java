@@ -1,6 +1,8 @@
 package com.filipszala.lecturemanager.service;
 
+import com.filipszala.lecturemanager.model.Lecture;
 import com.filipszala.lecturemanager.model.Student;
+import com.filipszala.lecturemanager.repository.LectureRepository;
 import com.filipszala.lecturemanager.repository.StudentRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,9 +19,11 @@ import java.util.Optional;
 @NoArgsConstructor
 public class StudentService {
     private StudentRepository studentRepository;
+    private LectureService lectureService;
     @Autowired
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository,LectureService lectureService) {
         this.studentRepository = studentRepository;
+        this.lectureService = lectureService;
     }
     public Student save(Student student){
         if (student.getName() == null || student.getSurname() == null) {
@@ -90,5 +94,23 @@ public class StudentService {
         }
         Student student = findStudentById(id).orElseThrow();
         studentRepository.delete(student);
+    }
+    public void selectLecture(Long lectureId, Long studentId){
+        if (lectureId==null){
+            throw new NullPointerException("Id can't be null");
+        }if (lectureId<=0) {
+            throw new IllegalArgumentException("Id can't be less than 1");
+        }
+        if (studentId==null){
+            throw new NullPointerException("Id can't be null");
+        }else if (studentId<=0) {
+            throw new IllegalArgumentException("Id can't be less than 1");
+        }
+        Lecture lecture =lectureService.findLectureById(lectureId).orElseThrow();
+        Student student = findStudentById(studentId).orElseThrow();
+        lecture.addStudent(student);
+        //cascade in class Lecture allows us to add single object from
+        //relationship to the database, another one will be automatically added.
+        lectureService.partiallyUpdateLecture(lecture.getId(),lecture);
     }
 }

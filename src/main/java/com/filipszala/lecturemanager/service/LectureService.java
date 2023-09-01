@@ -22,14 +22,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class LectureService {
     private LectureRepository lectureRepository;
-    private StudentService studentService;
     private StudentRepository studentRepository;
     private ProfessorRepository professorRepository;
 
     @Autowired
-    public LectureService(LectureRepository lectureRepository, StudentService studentService, StudentRepository studentRepository,ProfessorRepository professorRepository) {
+    public LectureService(LectureRepository lectureRepository, StudentRepository studentRepository,ProfessorRepository professorRepository) {
         this.lectureRepository = lectureRepository;
-        this.studentService = studentService;
         this.studentRepository = studentRepository;
         this.professorRepository = professorRepository;
     }
@@ -90,7 +88,7 @@ public class LectureService {
             throw new IllegalArgumentException("Id can't be less than 1");
         }
         Lecture lecture = findLectureById(id).orElseThrow();
-        if(updatedLecture.getStudents()!=null){
+        if(updatedLecture.getStudents().size()>0){
             lecture.setStudents(updatedLecture.getStudents());
         }
         if (updatedLecture.getProfessor()!=null){
@@ -113,22 +111,5 @@ public class LectureService {
         Lecture lecture = findLectureById(id).orElseThrow();
         lectureRepository.delete(lecture);
     }
-    public void selectLecture(Long lectureId, Long studentId){
-        if (lectureId==null){
-            throw new NullPointerException("Id can't be null");
-        }if (lectureId<=0) {
-            throw new IllegalArgumentException("Id can't be less than 1");
-        }
-        if (studentId==null){
-            throw new NullPointerException("Id can't be null");
-        }else if (studentId<=0) {
-            throw new IllegalArgumentException("Id can't be less than 1");
-        }
-        Lecture lecture =findLectureById(lectureId).orElseThrow();
-        Student student = studentService.findStudentById(studentId).orElseThrow();
-        lecture.addStudent(student);
-        //cascade in class Lecture allows us to add single object from
-        //relationship to the database, another one will be automatically added.
-        partiallyUpdateLecture(lecture.getId(),lecture);
-    }
+
 }

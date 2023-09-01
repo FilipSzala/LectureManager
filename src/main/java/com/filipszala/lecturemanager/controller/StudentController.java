@@ -65,4 +65,9 @@ public class StudentController {
         studentService.deleteStudent(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    @PatchMapping("/lectures/{lectureId}/{studentId}")
+    public ResponseEntity<String> selectLecture (@PathVariable("lectureId")Long lectureId,@PathVariable("studentId") Long studentId){
+        studentService.selectLecture(lectureId,studentId);
+        return ResponseEntity.ok("Lecture selected by the student");
+    }
 }

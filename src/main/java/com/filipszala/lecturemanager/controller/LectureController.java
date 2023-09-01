@@ -48,22 +48,22 @@ public class LectureController {
     }
 
     @PostMapping("/professors/{id}")
-    public ResponseEntity<Lecture> createLecture (@PathVariable("id")Long id,@RequestBody Lecture lecture){
+    public ResponseEntity<LectureDto> createLecture (@PathVariable("id")Long id,@RequestBody Lecture lecture){
         Professor professor = professorService.findProfessorById(id).orElseThrow();
         lecture.setProfessor(professor);
-        Lecture savedLecture = lectureService.save(lecture);
-        return new ResponseEntity<>(/*savedLecture, */HttpStatus.CREATED);
+        LectureDto lectureDto = LectureDtoMapper.mapToLectureDto(lectureService.save(lecture));
+        return new ResponseEntity<>(lectureDto,HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Lecture> updateLecture (@PathVariable("id")Long id,@RequestBody Lecture updatedLecture){
-        Lecture lecture = lectureService.updateLecture(id,updatedLecture);
+    public ResponseEntity<LectureDto> updateLecture (@PathVariable("id")Long id,@RequestBody Lecture updatedLecture){
+        LectureDto lecture = LectureDtoMapper.mapToLectureDto(lectureService.updateLecture(id,updatedLecture));
         return new ResponseEntity<>(lecture, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Lecture> partiallyUpdateLecture(@PathVariable("id")Long id, Lecture updatedLecture){
-        Lecture lecture =  lectureService.partiallyUpdateLecture(id,updatedLecture);
+    public ResponseEntity<LectureDto> partiallyUpdateLecture(@PathVariable("id")Long id,@RequestBody Lecture updatedLecture){
+        LectureDto lecture =  LectureDtoMapper.mapToLectureDto(lectureService.partiallyUpdateLecture(id,updatedLecture));
         return new ResponseEntity<>(lecture, HttpStatus.OK);
     }
 
@@ -71,11 +71,5 @@ public class LectureController {
     public ResponseEntity<Void> deleteLecture (@PathVariable("id")Long id){
         lectureService.deleteLecture(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @PatchMapping("/students/{lectureId}/{studentId}")
-    public ResponseEntity<String> selectLecture (@PathVariable("lectureId")Long lectureId,@PathVariable("studentId") Long studentId){
-        lectureService.selectLecture(lectureId,studentId);
-        return ResponseEntity.ok("Lecture selected by the student");
     }
 }
