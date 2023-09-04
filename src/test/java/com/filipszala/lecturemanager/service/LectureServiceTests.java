@@ -18,19 +18,12 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LectureServiceTests {
     @Mock
     private LectureRepository lectureRepository;
-    @Mock
-    private LectureService lectureServiceMock;
-    @Mock
-    private StudentRepository studentRepository;
-    @Mock
-    private StudentService studentService;
     @InjectMocks
     private LectureService lectureService;
 

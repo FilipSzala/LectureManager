@@ -2,7 +2,6 @@ package com.filipszala.lecturemanager.service;
 
 import com.filipszala.lecturemanager.model.Lecture;
 import com.filipszala.lecturemanager.model.Professor;
-import com.filipszala.lecturemanager.model.Student;
 import com.filipszala.lecturemanager.repository.LectureRepository;
 import com.filipszala.lecturemanager.repository.ProfessorRepository;
 import com.filipszala.lecturemanager.repository.StudentRepository;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -40,19 +38,15 @@ public class LectureService {
         }
         return lectureRepository.save(lecture);
     }
+
+    public void addProfessorToLecture(Long id, Lecture lecture) {
+        Professor professor = professorRepository.findById(id).orElseThrow();
+        lecture.setProfessor(professor);
+    }
     public List<Lecture> findAllLectures (){
         return lectureRepository.findAll();
     }
-    public List<Lecture> findAllLecturesWithProfessor (){
-        List <Lecture> lectures = lectureRepository.findAll();
-        lectures.forEach(lecture -> lecture.setProfessor(professorRepository.findById(lecture.getProfessor().getId()).orElseThrow()));
-        return lectures;
-    }
-    private List<Professor> extractProfessors (List<Professor> professors, long id){
-        return professors.stream()
-                .filter(professor -> professor.getId() == id)
-                .collect(Collectors.toList());
-    }
+
     public Optional<Lecture> findLectureById(Long id){
         if (id==null){
             throw new NullPointerException("Id can't be null");

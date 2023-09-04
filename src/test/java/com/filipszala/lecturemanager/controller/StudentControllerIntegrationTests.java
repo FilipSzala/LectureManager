@@ -173,7 +173,7 @@ public class StudentControllerIntegrationTests {
         assertThat(studentDto.getLectures().get(0).getName()).isEqualTo("Math");
     }
 
-    public List <Lecture> createLectures() {
+    private List <Lecture> createLectures() {
         ArrayList<Lecture> lectures = new ArrayList<>();
         lectures.add(lecture);
         return lectures;

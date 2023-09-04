@@ -5,7 +5,6 @@ import com.filipszala.lecturemanager.controller.dto.lecture.LectureWithoutProfes
 import com.filipszala.lecturemanager.controller.mapper.lecture.LectureDtoMapper;
 import com.filipszala.lecturemanager.controller.mapper.lecture.LectureWithoutProfessorAndStudentDtoMapper;
 import com.filipszala.lecturemanager.model.Lecture;
-import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.service.LectureService;
 import com.filipszala.lecturemanager.service.ProfessorService;
 import com.filipszala.lecturemanager.service.StudentService;
@@ -49,12 +48,10 @@ public class LectureController {
 
     @PostMapping("/professors/{id}")
     public ResponseEntity<LectureDto> createLecture (@PathVariable("id")Long id,@RequestBody Lecture lecture){
-        Professor professor = professorService.findProfessorById(id).orElseThrow();
-        lecture.setProfessor(professor);
+        lectureService.addProfessorToLecture(id, lecture);
         LectureDto lectureDto = LectureDtoMapper.mapToLectureDto(lectureService.save(lecture));
         return new ResponseEntity<>(lectureDto,HttpStatus.CREATED);
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<LectureDto> updateLecture (@PathVariable("id")Long id,@RequestBody Lecture updatedLecture){
         LectureDto lecture = LectureDtoMapper.mapToLectureDto(lectureService.updateLecture(id,updatedLecture));

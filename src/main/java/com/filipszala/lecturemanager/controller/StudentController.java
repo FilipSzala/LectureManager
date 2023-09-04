@@ -4,7 +4,6 @@ import com.filipszala.lecturemanager.controller.dto.student.StudentDto;
 import com.filipszala.lecturemanager.controller.dto.student.StudentWithoutLectureDto;
 import com.filipszala.lecturemanager.controller.mapper.student.StudentDtoMapper;
 import com.filipszala.lecturemanager.controller.mapper.student.StudentWithoutLectureDtoMapper;
-import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.model.Student;
 import com.filipszala.lecturemanager.model.User;
 import com.filipszala.lecturemanager.repository.StudentRepository;
@@ -12,9 +11,7 @@ import com.filipszala.lecturemanager.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
