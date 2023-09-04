@@ -49,7 +49,7 @@ public class ProfessorService {
         if (updatedProfessor==null){
             throw new IllegalArgumentException("Updated professor can't be empty");
         }
-        if (updatedProfessor.getSurname()==null||updatedProfessor.getName()==null||updatedProfessor.getId()==null||updatedProfessor.getLectures().isEmpty()){
+        if (updatedProfessor.getSurname()==null||updatedProfessor.getName()==null||updatedProfessor.getId()==null){
             throw new IllegalArgumentException("Fields of professor can't be empty");
         }
         else if (id==null){

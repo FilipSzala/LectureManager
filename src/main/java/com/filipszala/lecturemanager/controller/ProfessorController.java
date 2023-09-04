@@ -46,15 +46,15 @@ public class ProfessorController {
     }
 
     @PostMapping("")
-    public ResponseEntity<User> createProfessor(@RequestBody Professor professor) {
-        User user =professorService.save(professor);
-        return new ResponseEntity<>(user,HttpStatus.CREATED);
+    public ResponseEntity<ProfessorDto> createProfessor(@RequestBody Professor professor) {
+        ProfessorDto professorDto =ProfessorDtoMapper.mapToProfessorDto(professorService.save(professor));
+        return new ResponseEntity<>(professorDto,HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateProfessor(@PathVariable("id") Long id, @RequestBody Professor updatedProfessor) {
-        User user =professorService.updateProffesor(id, updatedProfessor);
-        return new ResponseEntity<>(user,HttpStatus.OK);
+    public ResponseEntity<ProfessorDto> updateProfessor(@PathVariable("id") Long id, @RequestBody Professor updatedProfessor) {
+        ProfessorDto professorDto =ProfessorDtoMapper.mapToProfessorDto(professorService.updateProffesor(id, updatedProfessor));
+        return new ResponseEntity<>(professorDto,HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
