@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class LectureControllerIntegrationTests {
     @Autowired
     MockMvc mockMvc;
@@ -37,10 +39,10 @@ public class LectureControllerIntegrationTests {
     ObjectMapper objectMapper;
 
     @Test
-    @Transactional
     public void shouldGetSingleLecture() throws Exception {
         //given
         Lecture lecture = createListOfLecture().get(0);
+        professorRepository.save(lecture.getProfessor());
         lectureRepository.save(lecture);
 
         //when
@@ -62,7 +64,6 @@ public class LectureControllerIntegrationTests {
 
     }
     @Test
-    @Transactional
     public void shouldGetListOfLecture() throws Exception {
         //given
         List<Lecture> lectures = createListOfLecture();
@@ -85,24 +86,8 @@ public class LectureControllerIntegrationTests {
         assertThat(lecturesDto[0].getName()).isEqualTo("Filip");
 
     }
-    @Test
-    @Transactional
-    public void shouldGetSingelLectureById() throws Exception {
-        Lecture lecture = createListOfLecture().get(0);
-
-        professorRepository.save(lecture.getProfessor());
-        lectureRepository.save(lecture);
-
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/lectures/"+lecture.getId()))
-                .andExpect(status().is(200)).andReturn();
-
-        LectureDto lectureDto = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), LectureDto.class);
-        assertThat(lectureDto).isNotNull();
-        assertThat(lectureDto).isInstanceOf(LectureDto.class);
-    }
 
     @Test
-    @Transactional
     public void shouldPartiallyUpdateLecture() throws Exception {
         Lecture lecture = createListOfLecture().get(0);
         Lecture lecture2 = createListOfLecture().get(1);
@@ -127,7 +112,6 @@ public class LectureControllerIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void shouldUpdateLecture() throws Exception {
         Lecture lecture = createListOfLecture().get(0);
         Lecture lecture2 = createListOfLecture().get(1);
@@ -150,7 +134,6 @@ public class LectureControllerIntegrationTests {
         assertThat(lectureCheck.getId()).isEqualTo(lecture.getId());
     }
     @Test
-    @Transactional
     public void shouldCreateLecture() throws Exception {
         Lecture lecture = createListOfLecture().get(0);
         Professor professor = createProfessor();
@@ -169,7 +152,6 @@ public class LectureControllerIntegrationTests {
         assertThat(lectureDto.getProfessorWithoutLectureDto()).isNotNull();
     }
     @Test
-    @Transactional
     public void shouldDeleteLecture() throws Exception {
         Lecture lecture = createListOfLecture().get(0);
 

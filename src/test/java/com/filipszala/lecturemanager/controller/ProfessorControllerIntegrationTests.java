@@ -8,11 +8,13 @@ import com.filipszala.lecturemanager.model.Professor;
 import com.filipszala.lecturemanager.repository.LectureRepository;
 import com.filipszala.lecturemanager.repository.ProfessorRepository;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -28,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+
 public class ProfessorControllerIntegrationTests {
     @Autowired
     MockMvc mockMvc;
@@ -40,16 +44,28 @@ public class ProfessorControllerIntegrationTests {
     @Autowired
     LectureRepository lectureRepository;
 
+    private  Professor professorInit;
+    private  List <Professor> professorsInit;
+    private  List <Lecture> lectureInit;
+
+    @BeforeEach
+    public void init() {
+        professorInit = createProfessor();
+        professorsInit = createProfessors();
+        lectureInit = createLectures();
+    }
+
     @Test
     @Transactional
     public void shouldGetSingleProfessor() throws Exception{
-        Professor professor = createProfessor();
-        lectureRepository.save(professor.getLectures().get(0));
-        lectureRepository.save(professor.getLectures().get(1));
-        professorRepository.save(professor);
+        lectureRepository.save(professorInit.getLectures().get(0));
+        lectureRepository.save(professorInit.getLectures().get(1));
+        professorRepository.save(professorInit);
+        Professor professor  =professorRepository.findById(1L).orElseThrow();
+        Lecture lecture = lectureRepository.findById(1L).orElseThrow();
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .get("/professors/"+professor.getId()))
+                .get("/professors/"+professorInit.getId()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andReturn();
@@ -61,13 +77,11 @@ public class ProfessorControllerIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void shouldGetListOfProfessor() throws Exception{
-        List<Professor> professors = createListOfProfessor();
-        lectureRepository.save(professors.get(0).getLectures().get(0));
-        lectureRepository.save(professors.get(0).getLectures().get(1));
-        professorRepository.save(professors.get(0));
-        professorRepository.save(professors.get(1));
+        lectureRepository.save(professorsInit.get(0).getLectures().get(0));
+        lectureRepository.save(professorsInit.get(0).getLectures().get(1));
+        professorRepository.save(professorsInit.get(0));
+        professorRepository.save(professorsInit.get(1));
 
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -82,7 +96,6 @@ public class ProfessorControllerIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void shouldCreateProfessor() throws Exception{
         Professor professor = createProfessor();
         professor.setLectures(new ArrayList<>());
@@ -101,7 +114,6 @@ public class ProfessorControllerIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void shouldUpdateProfessor() throws Exception{
         Professor professor = createProfessor();
         professor.setLectures(new ArrayList<>());
@@ -129,7 +141,6 @@ public class ProfessorControllerIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void shouldPartiallyUpdateProfessor() throws Exception{
         Professor professor = createProfessor();
         professor.setLectures(new ArrayList<>());
@@ -156,16 +167,13 @@ public class ProfessorControllerIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void shouldDeleteProfessor() throws  Exception{
-        Professor professor = createProfessor();
-
-        lectureRepository.save(professor.getLectures().get(0));
-        lectureRepository.save(professor.getLectures().get(1));
-        professorRepository.save(professor);
+        lectureRepository.save(professorInit.getLectures().get(0));
+        lectureRepository.save(professorInit.getLectures().get(1));
+        professorRepository.save(professorInit);
 
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/professors/"+professor.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete("/professors/"+professorInit.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
@@ -200,7 +208,7 @@ public class ProfessorControllerIntegrationTests {
         return lectures;
     }
 
-    private List<Professor> createListOfProfessor(){
+    private List<Professor> createProfessors(){
         ArrayList<Professor> professors = new ArrayList<>();
         professors.add(createProfessor());
         Professor professor = createProfessor();

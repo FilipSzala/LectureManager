@@ -176,6 +176,6 @@ public class StudentServiceTests {
     @Test
     public void selectLecture_LectureIdIsLessThanExpected_selectLecture(){
         assertThatThrownBy(() ->  studentService.selectLecture(0L,null))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
