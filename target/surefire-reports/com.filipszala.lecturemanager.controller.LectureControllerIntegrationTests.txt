@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.filipszala.lecturemanager.controller.LectureControllerIntegrationTests
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.816 s - in com.filipszala.lecturemanager.controller.LectureControllerIntegrationTests
