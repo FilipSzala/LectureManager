@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -21,6 +22,7 @@ public class ProfessorController {
     private ProfessorRepository professorRepository;
     private ProfessorService professorService;
     private LectureRepository lectureRepository;
+
     @Autowired
     public ProfessorController(ProfessorRepository professorRepository, ProfessorService professorService, LectureRepository lectureRepository) {
         this.professorRepository = professorRepository;

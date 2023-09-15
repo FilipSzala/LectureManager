@@ -22,6 +22,7 @@ public class LectureController {
     private LectureService lectureService;
     private StudentService studentService;
     private ProfessorService professorService;
+
     @Autowired
     public LectureController(LectureService lectureService,StudentService studentService,ProfessorService professorService) {
         this.lectureService = lectureService;
